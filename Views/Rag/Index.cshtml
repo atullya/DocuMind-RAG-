@@ -1,0 +1,136 @@
+@model ChatHistory
+@{
+    ViewData["Title"] = "Chat";
+}
+
+<div class="row g-4">
+    <!-- ─── Chat Area ─── -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">💬 Ask a Question</h5>
+                <span class="badge bg-secondary">
+                    📄 @Model.DocumentCount documents loaded
+                </span>
+            </div>
+            <div class="card-body">
+
+                <!-- Chat Messages -->
+                <div class="chat-container" id="chatContainer">
+                    @if (Model.Messages.Count == 0)
+                    {
+                        <div class="text-center mt-5" style="color: #a0a09a;">
+                            <div style="font-size: 2rem; margin-bottom: 12px;">✦</div>
+                            <h5 style="color: #f0ede6; font-weight: 600;">Welcome to ChatWithDocs</h5>
+                            <p style="font-size: 0.9rem;">Upload PDF or DOCX documents and start chatting with your files.</p>
+                            <a href="/Rag/Documents" class="btn btn-purple mt-2" style="padding: 8px 20px;">
+                                📄 Upload Documents
+                            </a>
+                        </div>
+                    }
+
+                    @foreach (var msg in Model.Messages)
+                    {
+                        if (msg.Role == "user")
+                        {
+                            <div class="user-msg">
+                                <strong style="font-size:0.8rem; color:#a0a09a;">You</strong>
+                                <p class="mb-0 mt-1">@msg.Content</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="bot-msg">
+                                <strong style="font-size:0.8rem; color:#e8896a;">✦ ChatWithDocs</strong>
+                                <p class="mb-1 mt-1">@msg.Content</p>
+
+                                @if (msg.Sources?.Any() == true)
+                                {
+                                    <div class="mt-2">
+                                        <small style="color:#a0a09a;">Sources:</small><br />
+                                        @foreach (var source in msg.Sources)
+                                        {
+                                            <span class="source-badge">
+                                                📌 @source[..Math.Min(80, source.Length)]...
+                                            </span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+
+                <!-- Question Input -->
+                <form asp-action="Ask" method="post" class="mt-3">
+                    <div class="input-group">
+                        <input type="text" name="Question"
+                               class="form-control form-control-lg"
+                               placeholder="Ask anything about your documents..."
+                               required />
+                        <button type="submit" class="btn btn-purple btn-lg">
+                            Send 🚀
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Clear Chat -->
+                <form asp-action="ClearChat" method="post" class="mt-2">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">
+                        🗑️ Clear Chat
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── Sidebar ─── -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">📊 How RAG Works</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                        <span style="background:#e8896a; color:#1e1e1a; border-radius:8px; padding:2px 10px; font-size:0.78rem; font-weight:700;">1</span>
+                        <strong style="font-size:0.92rem;">Retrieve</strong>
+                    </div>
+                    <p class="small text-muted mb-0">
+                        Your question is converted to a vector and compared against stored documents.
+                    </p>
+                </div>
+                <hr />
+                <div class="mb-3">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                        <span style="background:#e8896a; color:#1e1e1a; border-radius:8px; padding:2px 10px; font-size:0.78rem; font-weight:700;">2</span>
+                        <strong style="font-size:0.92rem;">Augment</strong>
+                    </div>
+                    <p class="small text-muted mb-0">
+                        The top matching documents are added to the prompt as context.
+                    </p>
+                </div>
+                <hr />
+                <div class="mb-3">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                        <span style="background:#e8896a; color:#1e1e1a; border-radius:8px; padding:2px 10px; font-size:0.78rem; font-weight:700;">3</span>
+                        <strong style="font-size:0.92rem;">Generate</strong>
+                    </div>
+                    <p class="small text-muted mb-0">
+                        GPT reads the context and generates an accurate, grounded answer.
+                    </p>
+                </div>
+                <hr />
+                <a asp-action="Documents" class="btn btn-purple w-100">
+                    📄 Manage Documents
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Auto-scroll chat to bottom -->
+<script>
+    var container = document.getElementById('chatContainer');
+    container.scrollTop = container.scrollHeight;
+</script>

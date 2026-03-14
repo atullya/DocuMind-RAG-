@@ -1,0 +1,273 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ChatWithDocs</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"      rel="stylesheet" />
+
+    <style>
+            :root {
+                --bg: #1e1e1a;
+                --surface: #2a2a26;
+                --surface2: #252521;
+                --border: #383834;
+                --border2: #404040;
+                --text: #f0ede6;
+                --text-muted: #a0a09a;
+                --accent: #e8896a;
+                --accent-hover: #d4754f;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                background-color: var(--bg);
+                color: var(--text);
+                font-family: 'Georgia', serif;
+                min-height: 100vh;
+            }
+
+            /* ── Navbar ── */
+            .navbar {
+                background-color: var(--bg) !important;
+                border-bottom: 1px solid var(--border);
+                padding: 14px 0;
+            }
+
+            .navbar-brand {
+                font-size: 1.2rem;
+                font-weight: 700;
+                color: var(--text) !important;
+                letter-spacing: -0.3px;
+            }
+
+            .navbar-brand span {
+                color: var(--accent);
+            }
+
+            .nav-link {
+                color: var(--text-muted) !important;
+                font-size: 0.9rem;
+                padding: 6px 14px !important;
+                border-radius: 8px;
+                transition: all 0.2s;
+            }
+
+            .nav-link:hover {
+                color: var(--text) !important;
+                background-color: var(--surface);
+            }
+
+            /* ── Cards ── */
+            .card {
+                background-color: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                color: var(--text);
+            }
+
+            .card-header {
+                background-color: var(--surface2);
+                border-bottom: 1px solid var(--border);
+                border-radius: 16px 16px 0 0 !important;
+                padding: 14px 20px;
+            }
+            .card-header h5 {
+                font-size: 1rem;
+                font-weight: 600;
+                color: var(--text);
+                margin: 0;
+            }
+
+            /* ── Chat ── */
+            .chat-container {
+                height: 500px;
+                overflow-y: auto;
+                background-color: var(--bg);
+                border-radius: 12px;
+                padding: 16px;
+                scrollbar-width: thin;
+                scrollbar-color: var(--border2) transparent;
+            }
+            .chat-container::-webkit-scrollbar {
+                width: 5px;
+            }
+            .chat-container::-webkit-scrollbar-thumb {
+                background: var(--border2);
+                border-radius: 10px;
+            }
+
+            .user-msg {
+                background-color: var(--surface);
+                color: var(--text);
+                border: 1px solid var(--border2);
+                border-radius: 18px 18px 4px 18px;
+                padding: 10px 16px;
+                margin: 8px 0;
+                max-width: 75%;
+                margin-left: auto;
+                font-size: 0.95rem;
+            }
+            .bot-msg {
+                background-color: var(--surface2);
+                color: var(--text);
+                border: 1px solid var(--border);
+                border-radius: 18px 18px 18px 4px;
+                padding: 10px 16px;
+                margin: 8px 0;
+                max-width: 75%;
+                font-size: 0.95rem;
+            }
+
+            .source-badge {
+                font-size: 0.72em;
+                background-color: var(--surface);
+                color: var(--text-muted);
+                border: 1px solid var(--border2);
+                padding: 3px 10px;
+                border-radius: 20px;
+                margin: 2px;
+                display: inline-block;
+            }
+
+            /* ── Form Controls ── */
+            .form-control,
+            .form-control-lg {
+                background-color: var(--surface) !important;
+                color: var(--text) !important;
+                border: 1px solid var(--border2) !important;
+                border-radius: 12px !important;
+            }
+
+            .form-control:focus,
+            .form-control-lg:focus {
+                border-color: var(--accent) !important;
+                box-shadow: 0 0 0 3px rgba(232, 137, 106, 0.15) !important;
+                outline: none;
+            }
+            .form-control::placeholder {
+                color: var(--text-muted) !important;
+            }
+            .form-label {
+                color: var(--text-muted);
+                font-size: 0.85rem;
+            }
+
+            /* ── Buttons ── */
+            .btn-purple {
+                background-color: var(--accent);
+                color: #1e1e1a;
+                border: none;
+                border-radius: 10px;
+                font-weight: 600;
+                font-size: 0.9rem;
+                transition: background-color 0.2s;
+            }
+
+            .btn-purple:hover {
+                background-color: var(--accent-hover);
+                color: #1e1e1a;
+            }
+            .btn-outline-secondary {
+                color: var(--text-muted) !important;
+                border-color: var(--border2) !important;
+                border-radius: 8px;
+                font-size: 0.82rem;
+            }
+            .btn-outline-secondary:hover {
+                background-color: var(--surface2) !important;
+                color: var(--text) !important;
+            }
+
+            /* ── Badge ── */
+            .badge.bg-secondary {
+                background-color: var(--surface2) !important;
+                color: var(--text-muted) !important;
+                border: 1px solid var(--border);
+                font-weight: 400;
+                font-size: 0.78rem;
+                padding: 5px 10px;
+                border-radius: 20px;
+            }
+
+            /* ── Alerts ── */
+            .alert-success {
+                background-color: var(--surface2) !important;
+                color: #7ecfa0 !important;
+                border: 1px solid #3a5a47 !important;
+                border-radius: 10px;
+            }
+            .alert-danger {
+                background-color: var(--surface2) !important;
+                color: #e87b7b !important;
+                border: 1px solid #5a3a3a !important;
+                border-radius: 10px;
+            }
+
+            /* ── File Input ── */
+            input[type="file"]::file-selector-button {
+                background-color: var(--accent);
+                color: #1e1e1a;
+                border: none;
+                border-radius: 8px;
+                padding: 4px 12px;
+                font-size: 0.82rem;
+                font-weight: 600;
+                cursor: pointer;
+                margin-right: 10px;
+            }
+            input[type="file"]::file-selector-button:hover {
+                background-color: var(--accent-hover);
+            }
+
+            /* ── Text ── */
+            .text-muted {
+                color: var(--text-muted) !important;
+            }
+            hr {
+                border-color: var(--border);
+                opacity: 1;
+            }
+
+            /* ── Input group ── */
+            .input-group .form-control-lg {
+                border-right: none !important;
+                border-radius: 12px 0 0 12px !important;
+            }
+            .input-group .btn-purple {
+                border-radius: 0 12px 12px 0 !important;
+                padding: 0 22px;
+            }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <span>✦</span> ChatWithDocs
+            </a>
+            <div class="navbar-nav ms-auto d-flex flex-row gap-1">
+                <a class="nav-link" asp-controller="Rag" asp-action="Index">💬 Chat</a>
+                <a class="nav-link" asp-controller="Rag" asp-action="Documents">📄 Documents</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        @RenderBody()
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

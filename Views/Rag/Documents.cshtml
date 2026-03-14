@@ -1,0 +1,88 @@
+@model List<RAGApp.Models.Document>
+@{
+    ViewData["Title"] = "Documents";
+}
+
+<div class="row g-4">
+    <!-- ─── Add Document ─── -->
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">➕ Add New Document</h5>
+            </div>
+            <div class="card-body">
+
+                @if (TempData["Message"] != null)
+                {
+                    <div class="alert alert-success">@TempData["Message"]</div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger">@TempData["Error"]</div>
+                }
+
+                <form asp-action="AddDocument" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Upload PDF or DOCX File</label>
+                        <input type="file"
+                               name="UploadedFile"
+                               class="form-control"
+                               accept=".pdf,.docx"
+                               required />
+                        <div class="mt-2" style="font-size:0.78rem; color:#a0a09a;">
+                            Supported formats: .pdf, .docx
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-purple w-100" style="padding:10px;">
+                        Upload Document 📄
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── Document List ─── -->
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">📚 Knowledge Base</h5>
+                <span class="badge bg-secondary">@Model.Count documents</span>
+            </div>
+            <div class="card-body" style="max-height: 600px; overflow-y: auto;
+                 scrollbar-width: thin; scrollbar-color: #404040 transparent;">
+
+                @if (Model.Count == 0)
+                {
+                    <div class="text-center py-4" style="color: #a0a09a;">
+                        <div style="font-size:1.8rem; margin-bottom:8px;">📭</div>
+                        <p class="mb-0" style="font-size:0.9rem;">No documents yet. Upload one to get started.</p>
+                    </div>
+                }
+
+                @foreach (var doc in Model)
+                {
+                    <div class="card mb-2" style="background-color: #252521; border: 1px solid #383834; border-radius: 12px;">
+                        <div class="card-body py-3 px-3">
+                            <p class="mb-2" style="font-size:0.88rem; color:#f0ede6; line-height:1.5;">
+                                @doc.Content
+                            </p>
+                            <div style="display:flex; flex-wrap:wrap; gap:6px; font-size:0.75rem; color:#a0a09a;">
+                                <span style="background:#1e1e1a; border:1px solid #383834; border-radius:6px; padding:2px 8px;">
+                                    🏷️ @doc.Source
+                                </span>
+                                <span style="background:#1e1e1a; border:1px solid #383834; border-radius:6px; padding:2px 8px;">
+                                    🕐 @doc.AddedAt.ToString("g")
+                                </span>
+                                <span style="background:#1e1e1a; border:1px solid #383834; border-radius:6px; padding:2px 8px;">
+                                    🆔 @doc.Id
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
