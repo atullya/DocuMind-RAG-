@@ -144,7 +144,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you find this helpful, give it a ⭐ on GitHub!
 
----
+
 
 **Made with ❤️ for AI enthusiasts and document lovers**</content>
 <parameter name="filePath">/home/user/Desktop/RAG/RAGApp/README.md
